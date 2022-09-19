@@ -1,0 +1,48 @@
+nano /etc/ansible/hosts
+
+[localhost]
+127.0.0.1
+
+mkdir /etc/ansible/roles
+cd /etc/ansible/roles
+
+ansible-galaxy init test_user
+
+nano test_user/tasks/main.yml
+
+
+Создаем файлы для роли
+
+ansible-galaxy init user
+
+nano user/tasks/install_user.yml
+
+---
+
+- name: Create User user
+  user:
+    name: user
+    create_home: no
+    shell: /bin/false
+
+- name: Create directories for user
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: user
+    group: user
+  loop:
+    - '/tmp/user'
+    - '/etc/user'
+    - '/var/lib/user'
+
+
+
+---
+
+  file: 
+       path: /usr/local/etc/my.conf
+       state: touch
+       owner: test
+       group: test
+       mode: 0600
