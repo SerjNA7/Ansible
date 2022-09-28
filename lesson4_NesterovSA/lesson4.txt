@@ -1,0 +1,72 @@
+
+
+
+---
+- hosts: all
+  tasks:
+    - debug:
+        msg: "TEST"
+
+
+ansible-playbook -i "localhost," -c local TEST.yml
+
+// Создаём файл vars/text.yml со строкой:
+
+data_text: |
+  some text data
+  another text data
+
+
+// Создаём файл с паролем:
+
+echo “MyPass” > ~/.ansible_pass.txt
+
+// Шифруем файл vars/text.yml:
+
+ansible-vault encrypt vars/text.yml --vault-password-file ~/.ansible_pass.txt
+
+head -n 2 vars/text.yml
+
+_____________________
+
+---
+- hosts: all
+  tasks:
+    - debug:
+        msg: "TEST"
+    - name: add var
+      include_vars:
+        file: text.yml
+    - name: Add descrypted text from text.yml
+      copy:
+        content="{{ data_text }}"
+        dest=/tmp/text_out.txt
+
+
+// Запускаем:
+
+ansible-playbook -i "localhost," -c local TEST.yml --vault-password-file ~/.ansible_pass.txt
+
+
+_____________________
+
+
+---
+- hosts: testB
+  remote_user: root
+  tasks:
+  - name: task1
+    file:
+      path: /testdir/t1
+      state: touch
+    tags:
+      - t1
+  - name: task2
+    file: path=/testdir/t2
+          state=touch
+    tags: ['t2']
+  - name: task3
+    file: path=/testdir/t3
+          state=touch
+    tags: t3,always
+
