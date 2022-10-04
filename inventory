@@ -1,0 +1,9 @@
+[api]
+192.168.10.1
+192.168.10.2
+192.168.10.3
+
+
+[api:vars]
+ansible_ssh_user=test
+ansible_ssh_private_key_file=~/.test.d/insecure_private_key
